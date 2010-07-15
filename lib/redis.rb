@@ -451,7 +451,14 @@ class Redis
       c.value :store
     end
 
-    @client.call(:sort, key, *command.to_a)
+    res = @client.call(:sort, key, *command.to_a)
+    res.map {|r|
+      if r.is_a?(Array)
+        Hash[*r]
+      else
+        r
+      end
+    }
   end
 
   def incr(key)
